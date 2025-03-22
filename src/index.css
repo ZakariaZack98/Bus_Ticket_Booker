@@ -1,5 +1,10 @@
 @import 'tailwindcss';
 
-.loginPage {
+.loginPage, .bookingPage {
   background-image: url(assets/login-bg.jpg);
+  
+}
+
+.blackBG {
+  background-color: rgba(0, 0, 0, 0.486);
 }
