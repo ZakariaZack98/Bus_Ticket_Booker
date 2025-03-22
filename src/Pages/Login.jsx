@@ -1,15 +1,26 @@
 import React, { useState } from "react";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const auth = getAuth();
+  const navigate = useNavigate();
   const handleInput = (e) => {
     e.target.name === "email"
       ? setEmail(e.target.value)
       : setPassword(e.target.value);
   };
-  console.log(email, password);
+
+  const handleLogin = e => {
+    e.preventDefault();
+    signInWithEmailAndPassword(auth, email, password)
+    .then(userInfo => {
+      navigate('/bookingpage')
+    })
+  }
 
   return (
     <div className="loginPage h-screen w-full bg-cover bg-center flex items-center justify-center">
@@ -57,6 +68,7 @@ const Login = () => {
           <button
             type="submit"
             className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            onClick={e => handleLogin(e)}
           >
             Login
           </button>
