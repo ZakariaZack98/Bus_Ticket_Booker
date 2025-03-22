@@ -1,1 +1,5 @@
-@import 'tailwindcss'
+@import 'tailwindcss';
+
+.loginPage {
+  background-image: url(assets/login-bg.jpg);
+}
