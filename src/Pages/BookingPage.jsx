@@ -11,6 +11,28 @@ const BookingPage = () => {
   );
   const [destination, setDestination] = useState(destinations[0]);
   const [selectedCoach, setSelectedCoach] = useState(null);
+  const [selectedSeat, setSelectedSeat] = useState(null);
+
+  const handleSeatSelect = e => {
+    console.log(e.target.innerText, selectedCoach) //work here
+    const updatedData = JSON.parse(JSON.stringify(data));
+    for(let i = 0; i < updatedData.length; i++) {
+      if(updatedData[i].coachID == selectedCoach) {
+        for(let j = 0; j < updatedData[i].seats.length; j++) {
+          if(updatedData[i].seats[j].id === e.target.innerText) {
+            setSelectedSeat(updatedData[i].seats[j]);
+            
+            // updatedData[i].seats[j].booked = true;
+            // updatedData[i].seats[j].bookingDetails = {
+            //   passengerName: 'Mr. X',
+            //   bookedAt: new Date().toLocaleDateString(),
+            //   seller: auth.currentUser.email
+            // }
+          }
+        }
+      }
+    }
+  }
 
   const handleBooking = e => {
     console.log(e.target.innerText, selectedCoach) //work here
@@ -22,7 +44,7 @@ const BookingPage = () => {
             updatedData[i].seats[j].booked = true;
             updatedData[i].seats[j].bookingDetails = {
               passengerName: 'Mr. X',
-              bookedAt: new Date().toLocaleTimeString(),
+              bookedAt: new Date().toLocaleDateString(),
               seller: auth.currentUser.email
             }
           }
@@ -110,7 +132,7 @@ const BookingPage = () => {
               .map((coach) =>
                 coach.seats.map((item, index) => {
                   return (
-                    <div key={item.id} className={`w-[20%] h-[35px] ${(index + 1) % 4 === 3 ? 'ml-[20%]' : ''} ${item.booked ? 'bg-red-800' : 'bg-green-800'} p-3 border-solid border-2 border-white rounded-md flex justify-center items-center cursor-pointer`} value={item.id} onClick={e => handleBooking(e)}>
+                    <div key={item.id} className={`w-[20%] h-[35px] ${(index + 1) % 4 === 3 ? 'ml-[20%]' : ''} ${item.booked ? 'bg-red-800' : 'bg-green-800'} p-3 border-solid border-2 ${selectedSeat && selectedSeat.id == item.id ? 'border-amber-400' : 'border-white'} rounded-md flex justify-center items-center cursor-pointer`} value={item.id} onClick={e => handleSeatSelect(e)}>
                       {item.id}
                     </div>
                   )
@@ -118,6 +140,43 @@ const BookingPage = () => {
               )}
               </div>
             </div>
+          </div>
+          <div className="seatDetails w-[30%] ms-10">
+            {
+              !selectedSeat
+              ? (<h1 className="text-2xl font-semibold">No seat selected.</h1>)
+              : (
+                <div>
+                  <h1 className="text-2xl font-semibold">Seat Booking Details:</h1>
+                  <h4>Current Status: {selectedSeat.booked ? 'Booked' : 'Empty'}</h4>
+                  {selectedSeat.booked 
+                  ? (
+                    <div className="ticketInfo">
+                      <p className="text-lg">Passanger Name: {selectedSeat.seatDetails.passengerName}</p>
+                      <p>Passanger Contact: {selectedSeat.seatDetails.passengerPhone}</p>
+                      <p>Booked At: {selectedSeat.seatDetails.bookedAt}</p>
+                      <p className="text-sm font-semibold">Sold by: {selectedSeat.seatDetails.seller}</p>
+                      <button className="px-8 py-2 rounded-md font-semibold" onClick={e => handleCancel(e)}>Cancel booking</button>
+                    </div>
+                  ) 
+                  : (
+                    <form className="seatBookingForm flex flex-col gap-y-4 mt-10">
+                      <div className="flex flex-col">
+                        <label htmlFor="passengerName">Passenger Name: </label>
+                        <input type="text" id="passengerName" name="passengerName"/>
+                      </div>
+                      <div className="flex flex-col">
+                        <label htmlFor="passengerPhone">Passenger Contact: </label>
+                        <input type="text" id="passengerPhone" name="passengerPhone"/>
+                      </div>
+                      <p>Selected Seat: {selectedSeat.id}</p>
+                      <button className="px-8 py-2 bg-green-800 rounded-md cursor-pointer">Confirm booking</button>
+                    </form>
+                  )}
+                </div>
+                )
+            }
+            
           </div>
         </div>
       </div>
