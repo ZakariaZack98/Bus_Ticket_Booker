@@ -5,19 +5,17 @@ import { GiSteeringWheel } from "react-icons/gi";
 import { toast } from "react-toastify";
 
 const BookingPage = () => {
-  //SETTING UP STATES
+  //SETTING UP STATES AND VARIABLES
   const [data, setData] = useState(JSON.parse(JSON.stringify(coachesData())));
   const auth = getAuth();
+  const destinations = Array.from(
+    new Set([...data.map((element) => element.destination)])
+  );
   const [destination, setDestination] = useState(destinations[0]);
   const [selectedCoach, setSelectedCoach] = useState(null);
   const [selectedSeat, setSelectedSeat] = useState(null);
   const [passengerName, setPassengerName] = useState("");
   const [passengerPhone, setPassengerPhone] = useState("");
-
-  //EXTRACTING DESTINATION OF ALL AVAILABLE COACHES INTO AN ARRAY
-  const destinations = Array.from(
-    new Set([...data.map((element) => element.destination)])
-  );
 
   /**
    * TODO: SET THE SELECTED SEAT BASED ON CLICKING ON SEATLAYOUT UI =================
@@ -41,10 +39,15 @@ const BookingPage = () => {
 
   /**
    * TODO: BOOKING SEAT BASED ON FORM DATA AND UPDATE THE DATA =======================
-   * @param passangerName, passangerPhone
+   * @param event, passangerName, passangerPhone
    * return null
    */ 
-  const handleBooking = () => {
+  const handleBooking = (e) => {
+    e.preventDefault();
+    if(!passengerName || !passengerPhone) {
+      toast.error('Input field must not be empty');
+      return;
+    }
     const updatedData = JSON.parse(JSON.stringify(data));
     for (let i = 0; i < updatedData.length; i++) {
       if (updatedData[i].coachID == selectedCoach) {
@@ -144,7 +147,8 @@ const BookingPage = () => {
                 id="coach"
                 className="min-w-[400px] border-solid border-2 border-white"
                 onChange={(e) => {
-                  setSelectedCoach(e.target.value);
+                  console.log("Selected Coach:", e.target.value); // Log the selected value
+                  setSelectedCoach(e.target.value); // Update the state
                 }}
               >
                 {data
@@ -264,9 +268,9 @@ const BookingPage = () => {
                     <p className="font-bold">
                       Selected Seat: {selectedSeat.id}
                     </p>
-                    <button
+                    <button type="submit"
                       className="px-8 py-2 bg-green-800 rounded-md cursor-pointer"
-                      onClick={handleBooking}
+                      onClick={e => handleBooking(e)}
                     >
                       Confirm booking
                     </button>
