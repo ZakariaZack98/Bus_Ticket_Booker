@@ -5,17 +5,25 @@ import { GiSteeringWheel } from "react-icons/gi";
 import { toast } from "react-toastify";
 
 const BookingPage = () => {
+  //SETTING UP STATES
   const [data, setData] = useState(JSON.parse(JSON.stringify(coachesData())));
   const auth = getAuth();
-  const destinations = Array.from(
-    new Set([...data.map((element) => element.destination)])
-  );
   const [destination, setDestination] = useState(destinations[0]);
   const [selectedCoach, setSelectedCoach] = useState(null);
   const [selectedSeat, setSelectedSeat] = useState(null);
   const [passengerName, setPassengerName] = useState("");
   const [passengerPhone, setPassengerPhone] = useState("");
 
+  //EXTRACTING DESTINATION OF ALL AVAILABLE COACHES INTO AN ARRAY
+  const destinations = Array.from(
+    new Set([...data.map((element) => element.destination)])
+  );
+
+  /**
+   * TODO: SET THE SELECTED SEAT BASED ON CLICKING ON SEATLAYOUT UI =================
+   * @param event.target
+   * return null
+   */ 
   const handleSeatSelect = (e) => {
     console.log(e.target.innerText, selectedCoach);
     const updatedData = JSON.parse(JSON.stringify(data));
@@ -30,6 +38,12 @@ const BookingPage = () => {
     }
   };
 
+
+  /**
+   * TODO: BOOKING SEAT BASED ON FORM DATA AND UPDATE THE DATA =======================
+   * @param passangerName, passangerPhone
+   * return null
+   */ 
   const handleBooking = () => {
     const updatedData = JSON.parse(JSON.stringify(data));
     for (let i = 0; i < updatedData.length; i++) {
@@ -48,10 +62,18 @@ const BookingPage = () => {
       }
     }
     setData(updatedData);
-    toast.success("Seat booking successfull");
+    toast.success(`Seat booking for ${selectedSeat.id} successfull`);
     setSelectedSeat(null);
+    setPassengerName('');
+    setPassengerPhone('');
   };
 
+
+  /**
+   * TODO: REMOVING THE BOOKED SEAT AND UPDATE THE DATA =============================
+   * @param event.target
+   * return null
+   */ 
   const handleCancel = () => {
     const updatedData = JSON.parse(JSON.stringify(data));
     for (let i = 0; i < updatedData.length; i++) {
@@ -65,13 +87,17 @@ const BookingPage = () => {
       }
     }
     setData(updatedData);
-    toast.warn("Seat booking removed");
+    toast.warn(`Booking has been removed for ${selectedSeat.id}`);
     setSelectedSeat(null);
   }
 
+
+  /**
+   * TODO: SET THE FIRST AVAILABLE COACH AS DEFAULT WHENEVER THE DESTINATION CHANGE===
+   * @param destination
+   * return null
+   * */ 
   useEffect(() => {
-    console.log(data);
-    console.log(selectedCoach);
     const filteredCoaches = data.filter(
       (coach) => coach.destination === destination
     );
@@ -118,8 +144,7 @@ const BookingPage = () => {
                 id="coach"
                 className="min-w-[400px] border-solid border-2 border-white"
                 onChange={(e) => {
-                  console.log("Selected Coach:", e.target.value); // Log the selected value
-                  setSelectedCoach(e.target.value); // Update the state
+                  setSelectedCoach(e.target.value);
                 }}
               >
                 {data
@@ -198,7 +223,13 @@ const BookingPage = () => {
                       Sold by: {selectedSeat.bookingDetails.seller}
                     </p>
                     <button
-                      className="px-8 py-2 rounded-md font-semibold bg-red-800 cursor-pointer mt-10"
+                      className="px-8 py-2 rounded-md font-semibold bg-blue-800 cursor-pointer mt-10"
+                      onClick={(e) => handlePrint(e)}
+                    >
+                      Print Ticket
+                    </button>
+                    <button
+                      className="px-8 py-2 rounded-md font-semibold bg-red-800 cursor-pointer"
                       onClick={(e) => handleCancel(e)}
                     >
                       Cancel booking
