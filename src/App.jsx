@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import Login from './Pages/Login'
 import BookingPage from './Pages/BookingPage';
-import { getAuth } from 'firebase/auth';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import SignUp from './Pages/SignUp';
 
 
 const App = () => {
@@ -11,6 +11,7 @@ const App = () => {
       <Routes>
         <Route index element={<Login/>}/>
         <Route path='/bookingpage' element={<BookingPage/>}/>
+        <Route path='/signUp' element={<SignUp/>}/>
       </Routes>
     </BrowserRouter>
   )

@@ -1,6 +1,6 @@
 @import 'tailwindcss';
 
-.loginPage, .bookingPage {
+.loginPage, .bookingPage, .signUpPage {
   background-image: url(assets/login-bg.jpg);
   
 }
