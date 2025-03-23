@@ -13,9 +13,10 @@ const BookingPage = () => {
   const [selectedCoach, setSelectedCoach] = useState(null);
 
   const handleBooking = e => {
+    console.log(e.target.innerText, selectedCoach) //work here
     const updatedData = JSON.parse(JSON.stringify(data));
     for(let i = 0; i < updatedData.length; i++) {
-      if(updatedData[i].coachID === selectedCoach) {
+      if(updatedData[i].coachID == selectedCoach) {
         for(let j = 0; j < updatedData[i].seats.length; j++) {
           if(updatedData[i].seats[j].id === e.target.innerText) {
             updatedData[i].seats[j].booked = true;
@@ -29,17 +30,19 @@ const BookingPage = () => {
       }
     }
     setData(updatedData);
+    console.log('selected after booking', selectedCoach)
   }
 
   useEffect(() => {
     console.log(data);
+    console.log(selectedCoach)
     const filteredCoaches = data.filter(
       (coach) => coach.destination === destination
     );
     if (filteredCoaches.length > 0) {
       setSelectedCoach(filteredCoaches[0].coachID);
     }
-  }, [destination, data]);
+  }, [destination]);
 
   return (
     <div className="bookingPage h-svh bg-center bg-cover bg-no-repeat text-white">
@@ -101,11 +104,11 @@ const BookingPage = () => {
                 </span>
               </div>
               <div className="passengerSec p-1.5 flex flex-wrap w-full gap-y-2">
-                {data
-              ?.filter((coach) => coach.coachID === selectedCoach)
+                {console.log('before reneder', selectedCoach)}
+                {
+                data?.filter((coach) => coach.coachID == selectedCoach)
               .map((coach) =>
                 coach.seats.map((item, index) => {
-                  console.log(selectedCoach)
                   return (
                     <div key={item.id} className={`w-[20%] h-[35px] ${(index + 1) % 4 === 3 ? 'ml-[20%]' : ''} ${item.booked ? 'bg-red-800' : 'bg-green-800'} p-3 border-solid border-2 border-white rounded-md flex justify-center items-center cursor-pointer`} value={item.id} onClick={e => handleBooking(e)}>
                       {item.id}
@@ -115,7 +118,6 @@ const BookingPage = () => {
               )}
               </div>
             </div>
-            
           </div>
         </div>
       </div>
