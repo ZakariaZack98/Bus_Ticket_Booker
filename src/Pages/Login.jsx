@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
-import { toast } from "react-toastify";
+import app from "../../Database/firebase"
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const auth = getAuth();
+  const auth = getAuth(app);
   const navigate = useNavigate();
   const handleInput = (e) => {
     e.target.name === "email"

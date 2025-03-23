@@ -1,6 +1,6 @@
 import { getAuth, signOut } from "firebase/auth";
-import React, { useState, useEffect } from "react";
-import { coachesData } from "../../lib/BookingsData";
+import { GlobalContext } from "../contexts/GlobalContext";
+import React, { useState, useEffect, useContext } from "react";
 import { GiSteeringWheel } from "react-icons/gi";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -8,9 +8,11 @@ import { useNavigate } from "react-router-dom";
 const BookingPage = () => {
   
   //SETTING UP STATES AND VARIABLES
+  const { data, setData } = useContext(GlobalContext); // Access global state
   const navigate = useNavigate();
-  const [data, setData] = useState(JSON.parse(JSON.stringify(coachesData())));
   const auth = getAuth();
+
+  // Local states
   const destinations = Array.from(
     new Set([...data.map((element) => element.destination)])
   );
@@ -116,14 +118,14 @@ const BookingPage = () => {
 
   const handleSignOut = () => {
     signOut(auth)
-    .then(() => {
-      toast.success("Successfully signed out!");
-      navigate("/"); // Redirect to the login page
-    })
-    .catch((error) => {
-      toast.error(`Error signing out: ${error.message}`);
-    });
-  }
+      .then(() => {
+        toast.success("Successfully signed out!");
+        navigate("/"); // Redirect to the login page
+      })
+      .catch((error) => {
+        toast.error(`Error signing out: ${error.message}`);
+      });
+  };
 
 
   return (
@@ -167,8 +169,8 @@ const BookingPage = () => {
                 id="coach"
                 className="min-w-[400px] border-solid border-2 border-white"
                 onChange={(e) => {
-                  console.log("Selected Coach:", e.target.value); // Log the selected value
-                  setSelectedCoach(e.target.value); // Update the state
+                  setSelectedCoach(e.target.value);
+                  setSelectedSeat(null);
                 }}
               >
                 {data
