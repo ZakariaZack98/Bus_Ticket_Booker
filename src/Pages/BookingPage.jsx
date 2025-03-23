@@ -30,7 +30,7 @@ const BookingPage = () => {
     }
   };
 
-  const handleBooking = (e) => {
+  const handleBooking = () => {
     const updatedData = JSON.parse(JSON.stringify(data));
     for (let i = 0; i < updatedData.length; i++) {
       if (updatedData[i].coachID == selectedCoach) {
@@ -51,6 +51,23 @@ const BookingPage = () => {
     toast.success("Seat booking successfull");
     setSelectedSeat(null);
   };
+
+  const handleCancel = () => {
+    const updatedData = JSON.parse(JSON.stringify(data));
+    for (let i = 0; i < updatedData.length; i++) {
+      if (updatedData[i].coachID == selectedCoach) {
+        for (let j = 0; j < updatedData[i].seats.length; j++) {
+          if (updatedData[i].seats[j].id === selectedSeat.id) {
+            updatedData[i].seats[j].booked = false;
+            updatedData[i].seats[j].bookingDetails = null;
+          }
+        }
+      }
+    }
+    setData(updatedData);
+    toast.warn("Seat booking removed");
+    setSelectedSeat(null);
+  }
 
   useEffect(() => {
     console.log(data);
