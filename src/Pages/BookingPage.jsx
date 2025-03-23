@@ -7,12 +7,11 @@ import { useNavigate } from "react-router-dom";
 
 const BookingPage = () => {
   
-  //SETTING UP STATES AND VARIABLES
-  const { data, setData } = useContext(GlobalContext); // Access global state
+  //*SETTING UP STATES AND VARIABLES
+  const { data, setData } = useContext(GlobalContext);
   const navigate = useNavigate();
   const auth = getAuth();
 
-  // Local states
   const destinations = Array.from(
     new Set([...data.map((element) => element.destination)])
   );
@@ -40,7 +39,6 @@ const BookingPage = () => {
       }
     }
   };
-
 
   /**
    * TODO: BOOKING SEAT BASED ON FORM DATA AND UPDATE THE DATA =======================
@@ -112,10 +110,11 @@ const BookingPage = () => {
     );
     if (filteredCoaches.length > 0) {
       setSelectedCoach(filteredCoaches[0].coachID);
+      setSelectedSeat(null);
     }
   }, [destination]);
 
-
+  //TODO: HANDLE SIGNOUT FROM BOOKING PAGE
   const handleSignOut = () => {
     signOut(auth)
       .then(() => {
@@ -127,6 +126,11 @@ const BookingPage = () => {
       });
   };
 
+  //TODO: PREVENTING UNAUTHORIZED ACCESS
+  if(!auth.currentUser) {
+    navigate('/error')
+    return;
+  }
 
   return (
     <div className="bookingPage h-svh bg-center bg-cover bg-no-repeat text-white">
@@ -184,7 +188,7 @@ const BookingPage = () => {
             </div>
           </div>
           <div className="seatLayout flex">
-            <div className="h-[90dvh] w-[25dvw] border-solid border-2 border-white rounded-2xl">
+            <div className="h-[90dvh] w-[25dvw] border-solid border-2 border-white bg-black rounded-2xl">
               <div className="driverSec h-[20%] flex justify-end items-end py-3 px-5 border-solid border-b-2 border-white">
                 <span className="text-4xl border-2 border-solid border-white px-4 py-1 rounded-md">
                   <GiSteeringWheel />
@@ -219,7 +223,7 @@ const BookingPage = () => {
               </div>
             </div>
           </div>
-          <div className="bookingDetails w-[30%] ms-10">
+          <div className="bookingDetails w-[30%] ms-10 bg-black border-2 border-solid border-white p-6 rounded-xl">
             {!selectedSeat ? (
               <h1 className="text-2xl font-semibold">No seat selected.</h1>
             ) : (
@@ -270,7 +274,7 @@ const BookingPage = () => {
                         id="passengerName"
                         name="passengerName"
                         value={passengerName}
-                        className="px-2 text-black rounded-md"
+                        className="px-2 text-black rounded-md opacity-75 mt-1"
                         onChange={(e) => setPassengerName(e.target.value)}
                       />
                     </div>
@@ -283,7 +287,7 @@ const BookingPage = () => {
                         id="passengerPhone"
                         name="passengerPhone"
                         value={passengerPhone}
-                        className="px-2 text-black rounded-md"
+                        className="px-2 text-black rounded-md opacity-75 mt-1"
                         onChange={(e) => setPassengerPhone(e.target.value)}
                       />
                     </div>
