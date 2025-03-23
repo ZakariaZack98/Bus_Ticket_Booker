@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, updateCurrentUser, updateProfile } from "firebase/auth";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
@@ -23,8 +23,7 @@ const SignUp = () => {
     e.preventDefault();
     createUserWithEmailAndPassword(auth, email, password)
       .then((userInfo) => {
-        userInfo.user.displayName = fullName;
-        userInfo.user.counterName = counterName;
+        updateProfile(auth.currentUser, {displayName: fullName})
         toast.success("Account created successfully!");
         navigate("/bookingpage");
       })

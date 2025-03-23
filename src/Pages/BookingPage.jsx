@@ -1,11 +1,14 @@
-import { getAuth } from "firebase/auth";
+import { getAuth, signOut } from "firebase/auth";
 import React, { useState, useEffect } from "react";
 import { coachesData } from "../../lib/BookingsData";
 import { GiSteeringWheel } from "react-icons/gi";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const BookingPage = () => {
+  
   //SETTING UP STATES AND VARIABLES
+  const navigate = useNavigate();
   const [data, setData] = useState(JSON.parse(JSON.stringify(coachesData())));
   const auth = getAuth();
   const destinations = Array.from(
@@ -49,6 +52,7 @@ const BookingPage = () => {
       return;
     }
     const updatedData = JSON.parse(JSON.stringify(data));
+    
     for (let i = 0; i < updatedData.length; i++) {
       if (updatedData[i].coachID == selectedCoach) {
         for (let j = 0; j < updatedData[i].seats.length; j++) {
@@ -58,7 +62,7 @@ const BookingPage = () => {
               passengerName: passengerName,
               passengerPhone: passengerPhone,
               bookedAt: new Date().toLocaleString(),
-              seller: auth.currentUser.email,
+              seller: auth.currentUser.displayName,
             };
           }
         }
@@ -109,9 +113,25 @@ const BookingPage = () => {
     }
   }, [destination]);
 
+
+  const handleSignOut = () => {
+    signOut(auth)
+    .then(() => {
+      toast.success("Successfully signed out!");
+      navigate("/"); // Redirect to the login page
+    })
+    .catch((error) => {
+      toast.error(`Error signing out: ${error.message}`);
+    });
+  }
+
+
   return (
     <div className="bookingPage h-svh bg-center bg-cover bg-no-repeat text-white">
-      <div className="blackBG h-full w-full px-10 py-6">
+      <div className="blackBG h-full w-full px-10 py-6 relative">
+        <div className="absolute bottom-[5%] right-[3%]">
+          <button className="bg-red-700 px-6 py-2 rounded-md font-semibold cursor-pointer" onClick={handleSignOut}>Log Out</button>
+        </div>
         <div className="flex">
           <div className="busSelector min-w-[35dvw] flex flex-col justify-center items-start my-10 gap-y-10">
             <h1 className="font-bold text-3xl w-[400px]">Select A Coach</h1>
